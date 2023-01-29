@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+
+<objects>
+	<intro>
+Each class, which is derived from NirsObject, has "properties". Each property has a name and a value. When a NirsObject is created each property value is set to the default values. The NAnaT_DEFAULTS.m file default values. For example we create a ''NirsEventRelatedAverage'' object and check the default value for the //"interval"// property using the ''getProperty'' method: 
+  ERA = NirsEventRelatedAverage();
+  ERA.getProperty('interval')
+    
+  ans = 
+    0    30
+ 
+You can set an other value for a property using the ''setProperty'' method. This method can also handle multiple name-value pairs:
+  ERA.setProperty('interval',[0 20]);                     % single name-value pairs
+  ERA.getProperty('interval')
+  ans = 
+    0    20
+  
+  ERA.setProperty('average_window',[0 20],'pre_time',1);  % multiple name-value pairs
+  ERA.getProperty('average_window')
+  ans = 
+    0    20
+  
+  ERA.getProperty('pre_time')
+  ans = 
+    1
+Properties values can also be set using a structure with the object-keyword and the property names as field names. You can get the object-keyword from the NAnaT_DEFAULTS.m-file. The settings structure is then passed to the ''setProperties'' method. For example:
+  settings.event_related_average.interval = [0 20];
+  settings.event_related_average.average_window = [0 20];
+  settings.event_related_average.peak_window = [5 15];
+  settings.event_related_average.pre_time = 1;
+  
+  ERA = NirsEventRelatedAverage();
+  ERA = ERA.setProperties(settings);
+
+	</intro>
+	
+	<subject_data>
+		<read_directory>Directory where data is read from using the method readSubjectData.</read_directory>
+		<file_name_filter>Three-element cell-array of strings specifying the filter, which is used to filter the file names in the read directory. The first element gives the file name start. The second the file name end. The third the file extension, e.g. '.csv'. Empty strings mean that no filter is used.</file_name_filter>
+		<subject_keyword>The subject ID for the respective file name will be searched directly behind the subject keyword. For instance, for a file name 'nirsdata_SUBJ_08_Oxy.csv' a keyword 'SUBJ_' will results in a subject ID 8.</subject_keyword>
+		<read_type>A string specifying how the found files will be handled and read. Use 'etg4000' for NIRS-data from the ETG-4000 system. Use 'etg4000_trigger' to the respective trigger. Use 'txt' to read plain text. Use 'binary' to read binary files. You can add the data type of the binary file by adding it with a dot, for instance 'binary.int32'.</read_type>
+	</subject_data>
+	
+	<event_related_average>
+		<interval>Time window (in seconds), which is used to calculate an average response per subject, channel and condition. The average amplitude (amplitudes) and the peaks (maxima and minima are extracted from this average response.)</interval>
+		<average_window>The amplitudes of the averaged response (see interval) will be averaged within this time window (in seconds). The results will be stored with the tags "amplitudes". If you pass the empty array [], no amplitude averaging will be conducted. If you pass a cell array of time ranges, averaging will be conducted for each of these ranges. The results will be stored with the tags "amplitudes.win1, amplitudes.win2,...".</average_window>
+		<peak_window>Defines the window within that a peak detection will be conducted. The results will be stored with the tags "maxima.value, maxima.latency, minima.value, minima.latency". If you pass the empty array [], no peak detection will be conducted. If you pass a cell array of time ranges, averaging will be conducted for each of these ranges. The tags will be extended by ".win1, .win2...".</peak_window>
+		<pre_time>This time (in seconds) defines the length before the event onset that is used for baseline correction.</pre_time>
+		<peak_detection_sensitivity>Defines the sensitivity for peak detection (see peakdet). Signal changes below this threshold will not be detected as peaks.</peak_detection_sensitivity>
+		<linear_detrend>When this flag is turned to 'on' the averaged responses will be detrended linearly using the MATLAB-built function "detrend" </linear_detrend>
+	</event_related_average>
+	
+	<event_related_average2>
+		<interval>Time window (in seconds), which is used to calculate an average response per subject, channel and condition. The average amplitude (amplitudes) and the peaks (maxima and minima are extracted from this average response.)</interval>
+		<average_window>The amplitudes of the averaged response (see interval) will be averaged within this time window (in seconds). The results will be stored with the tags "amplitudes". If you pass the empty array [], no amplitude averaging will be conducted. If you pass a cell array of time ranges, averaging will be conducted for each of these ranges. The results will be stored with the tags "amplitudes.win1, amplitudes.win2,...".</average_window>
+		<peak_window>Defines the window within that a peak detection will be conducted. The results will be stored with the tags "maxima.value, maxima.latency, minima.value, minima.latency". If you pass the empty array [], no peak detection will be conducted. If you pass a cell array of time ranges, averaging will be conducted for each of these ranges. The tags will be extended by ".win1, .win2...".</peak_window>
+		<baseline_interval>This time (in seconds) defines the length before the event onset that is used for baseline correction.</baseline_interval>
+		<baseline_method>This time (in seconds) defines the length before the event onset that is used for baseline correction.</baseline_method>
+		<peak_detection_sensitivity>Defines the sensitivity for peak detection (see peakdet). Signal changes below this threshold will not be detected as peaks.</peak_detection_sensitivity>
+		<linear_detrend>When this flag is turned to 'on' the averaged responses will be detrended linearly using the MATLAB-built function "detrend" </linear_detrend>
+	</event_related_average2>
+	
+	<regression>. 
+		<event_duration>Specifies the width the boxcar for every trigger, which is convolved with the HRF</event_duration>
+		<standardize_hrf>Each model function will be divided by its standard deviation after convolution, when this option is set to 'on'. Use 'on' for example, when different condition have different event duration to make betas for these conditions comparable between each other.</standardize_hrf>
+		<global_regressors>String list of data entries in the subject data object, which will be added to the design matrix. This data must be a vector with same length as the design matrix. For example it could be the name of a heart rate measurement.</global_regressors>
+		<channel_wise_regressors>String list of data entries in the subject data object, which will be added to the design matrix. This data must have the same size as the analyzed data. Each channel from the channel-wise regressor will be added channel-wise to the design-matrix</channel_wise_regressors>
+		<event_related_regressors>You can add an additional (to the HRF) model function to the design matrix. For example a negative gaussian to model the initial dip.</event_related_regressors>
+		<event_related_hrfamps>This property defines a name of an entry in the subject data object for each subject, which holds a vector with individual amplitudes for each trial. The trigger value for each trial will be set to the respective amplitude (normally every amplitude is 1). This trigger is then convoluted with the HRF. This option can be used for example to perform an EEG-informed regression.</event_related_hrfamps>
+	</regression>
+	
+	<plot_tool>
+		<probesets>List of probesets-objects (see NirsProbeset) used for plotting and mapping each tagged with 'name'.</probesets>
+		<statistic_map_values>Defines which values are used for statistic mapping. Options are 'test_statistic' (i.e. t-values or correlation coefficients),'p-values' or 'effect_size' (i.e. Cohen's d).</statistic_map_values>
+		<era_plot_style>Options are 'scroll' and 'probeset'. Defines the plot style when using the plotEra-method. The 'scroll' option is obsolete. The 'probeset' option produces a plot, in which the ERA-plots for all channels are arranged according to the given probe set arrangement.</era_plot_style>
+		<global_scale>Defines a y-scale that is used for all plots of a figure. When this option is the empty array (i.e. []) each plots select its own scale.</global_scale>
+		<era_mark>Defines a range in seconds, which will be marked in ERA-plots. Give a n times 2 array to mark multiple ranges.</era_mark>
+		<show_probeset>When turned to 'on' channel IDs are shown in mapping figures.</show_probeset>
+		<show_head>When turned to 'on' a transparent head will be shown in mapping figures.</show_head>
+		<show_colorbar>When this option is a empty string, no color bar will be shown. Otherwise, a color bar will be shown with the given string as the color bar's title.</show_colorbar>
+		<color_map>Name of a color map used for brain mapping. A color map must be a function, which takes the number of value bins for color scaling. For example MatLab-builin color maps: jet, autumn, ... . There are also special brain-mapping color maps: braincmap, braincmap2 (the center color is brain-gray) and gap (see color_gap property)</color_map>
+		<color_limit>Defines the color limit for brain maps.</color_limit>
+		<color_gap>This property only has an effect, when the color map 'gap' is chosen. It defines a range within values are colored in brain-gray and are not visible this way..</color_gap>
+		<map_type>Specifies the map type for brain mapping. 'map': 2d map. 'brain_map': 3d map on the brain surface, interpolation on. 'brain_blobs': 3d on the brain, no interpolation. 'head_map': 3d on the head surface, interpolation on.</map_type>
+		<values2map>Cell array holding the values for brain mapping. The dimension of the cell array determines the dimension of the mapping plot. For each (cell-type) element of the input a own brain plot will be generated (matrix-style figure), whereas the content the element will be used for the respective brain map. For instance {{values11_left,values_11_right},{values12_left,values_12_right}} will generate two brain maps in a 1x2 arrangement with two value arrays (left and right) for each brain. To create the plot use the method map: map('values')</values2map>
+		<tests2map>Same as values2map, expect that instead of specifying numeric arrays, the names of the statistic analysis are given, which are stored in a NirsStatistic-object. To create the plot use the method map: map('statistics',T), whereas T is a NirsStatistic-object.</tests2map>
+		<probesets2map>String-input: Name of the probeset, which will be used for all brains. Cell-input: Probeset for the respective value array or test-name, for the example above {{'left','right'},{'left','right'}}.</probesets2map>
+		<view_angles>Two-element input defining the view-angles (see MatLab-builtin view function) of each plot. Analogue usage as probesets2map.</view_angles>
+		<row_names>String-cell or cell of string-cells (for multiple lines) holding the row names of a matrix-style mapping figure</row_names>
+		<column_names>String-cell or cell of string-cells (for multiple lines) holding the column names of a matrix-style mapping figure</column_names>
+		<plot_parent>Specifies the handle of the figure that will contain the plot. when this property is set to [] a new figure will be created for each plot.</plot_parent>
+	</plot_tool>
+	
+	<probeset>
+		<dimension>In the case of a classic rectangular optode arrangement you can specify the number or optodes per row (m) and per column (n) as a vector [m n] </dimension>
+		<optode_distance>Holds the typical optode distance (in millileters) of the probe set.</optode_distance>
+		<transformation>Cell of strings specifying transformations which are applied to the 2d-coordinates of the probe set. Following transformations are implemented: 'flip_up2down', 'flip_left2right', 'transpose', 'rotate90'. The transformations are applied in the order from left to right.</transformation>
+		<brain_coord_file>Give the path to a text file containing the 3d (xyz) coordinates of the optodes and/or channels. Read [[coordfiles|here]] how such a file must be formed.</brain_coord_file>
+		<xy_coord_file>Give the path to a text file containing the 2d (xy) coordinates of the optodes and/or channels. Read [[coordfiles|here]] how such a file must be formed.</xy_coord_file>
+		<optode_channel_assignment>If your coordinate files only contain the optode coordinates, turn this option 'on'. In this case, the channel coordinates will be calculated from the optode coordinates.</optode_channel_assignment>
+		<anatomic_assignment_type>Defines which brain parcellation is used to assign channels to functional or anatomic brain regions. Option are 'brodmann', 'aal'. When a 3d coordinate file was successfully scanned, you can view a table of the assignments by evoking the ''showAnatomicLabels()'' method of a NirsProbeset object.</anatomic_assignment_type>
+		<template_name>If the template is not specified in the coordinate file it can be set here.</template_name>
+	</probeset>
+</objects>

@@ -1,0 +1,11 @@
+PRe1 0 0
+PRd1 0 -30
+PRd3 -30 0
+PRd2 0 30
+PRe4 30 0
+PRe2 -50 40
+
+CH01 e1 d1
+CH02 e1 d2
+CH03 e2 d2
+CH04 e1 d3
