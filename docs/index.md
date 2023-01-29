@@ -13,15 +13,17 @@ If you have a question, contact me:
 
     me@ben-steffen.de
 
-## Download/Clone ##
+## Source
 
-[GitHub-Repository](https://github.com/bensteffen/bsroutines)
+[Download v1.0 (2017-04-27)](https://github.com/bensteffen/bsroutines/archive/refs/tags/v1.0.zip)
+
+[GitHub-Repository](https://github.com/bensteffen/bsroutines/)
 
 ## Install ##
 
 ### Notes ###
 
-  * Do not use `initPackage`-file to install the routines. Use the newer `initroutines`, instead.
+  * Do not use `initPackage`-file to install the routines. Use the newer `initroutines`, instead, which can be found in the source root.
   * Do not add the paths manually by using the set-path-menu in the MATLAB-GUI. These changes would be applied to everyone using MATLAB on your computer.
 
 ### Step 1 ###
