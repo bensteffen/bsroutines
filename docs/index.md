@@ -62,5 +62,5 @@ to edit you startup file.
 Following tools with graphical user interface (GUI) are available:
   * [ETG4000 export tool](/nirsexport)
   <!-- * [[usersection:psychphys:tools:nirsexport|ETG4000 export tool]] -->
-  * [NIRS-Planer](/nirsplaner)
+  * [NIRS-Planer](/channelxyz/nirsplaner.md)
   <!-- * [[usersection:psychphys:channelxyz:nirsplaner|NIRS-Planer]] -->
